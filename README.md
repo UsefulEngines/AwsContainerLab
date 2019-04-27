@@ -21,6 +21,10 @@ Herein, we illustrate building, deploying, and running a .NET Core containerized
 * Requirements : A laptop or workstation (Windows, Mac, Linux) with a Terminal application. Refer to  <a href="#appendix-a">**Appendix A**</a> herein.
 * An [AWS Account](https://aws.amazon.com/account/)
 
+**Credits**
+This lab is derived from work done by others including:
+* https://github.com/aws-samples/amazon-ecs-fargate-aspnetcore/
+* https://aws.amazon.com/blogs/compute/hosting-asp-net-core-applications-in-amazon-ecs-using-aws-fargate/
 
 
 ### Reference Architecture
@@ -32,9 +36,6 @@ Herein, our example ASP.NET Core application will serve traffic from the Interne
 Refer to this [AWS Labs github project](https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS) for solution architecture options illustrations.
 
 Figure 1 illustrates a corresponding reference architecture. 
-
-![Architecture](https://github.com/awslabs/aws-cloudformation-templates/blob/master/aws/services/ECS/images/public-task-public-loadbalancer.png)
-
 
 ![Picture1](./images/aspnetcorefargate.jpg)
 **Figure 1 – Reference Architecture**
@@ -191,7 +192,7 @@ ENTRYPOINT ["dotnet", "mywebapp.dll"]
 
 **Note:** Alternatively, use the following command to download a copy of this script file.
 ``` shell
-curl -L -o Dockerfile https://raw.githubusercontent.com/UsefulEngines/staticfiles/master/awslab.io/Containers/Fargate/scripts/myproject/mywebapp/Dockerfile
+curl -L -o Dockerfile https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/mywebapp/Dockerfile
 ```
 
 **Note**: This lab is written using .NET Core Runtime version 2.1, which is the runtime version currently deployed within AWS AMI images.  This will change over time.  Use the `dotnet --version` command to identify the currently installed runtime and make corresponding changes within your `Dockerfile` as needed.
@@ -260,7 +261,7 @@ http {
 
 **Note:** Alternatively, use the following command to download a copy of this script file.
 ``` shell
-curl -L -o nginx.conf https://raw.githubusercontent.com/UsefulEngines/staticfiles/master/awslab.io/Containers/Fargate/scripts/myproject/reverseproxy/nginx.conf
+curl -L -o nginx.conf https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/reverseproxy/nginx.conf
 ```
 
 As illustrated above, we specify service name `mywebapp`, listening on port 5000, within the `upstream app_servers` section. The Nginx `reverseproxy` server listens on port 80. 
@@ -286,7 +287,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 **Note:** Alternatively, use the following command to download a copy of this script file.
 ``` shell
-curl -L -o Dockerfile https://raw.githubusercontent.com/UsefulEngines/staticfiles/master/awslab.io/Containers/Fargate/scripts/myproject/reverseproxy/Dockerfile
+curl -L -o Dockerfile https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/reverseproxy/Dockerfile
 ```
 
 The `Dockerfile` script creates a container and copies the `nginx.conf` file in the `reverseproxy` folder to the `/etc/nginx/` folder inside our container.
@@ -338,7 +339,7 @@ services:
 
 **Note:** Alternatively, use the following command to download a copy of this script file.
 ``` shell
-curl -L -o docker-compose.yml https://raw.githubusercontent.com/UsefulEngines/staticfiles/master/awslab.io/Containers/Fargate/scripts/myproject/docker-compose.yml
+curl -L -o docker-compose.yml https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/docker-compose.yml
 ```
 
 The `docker-compose.yml` file defines two services. The first service, `mywebapp`, exposes port 5000 and depends upon the service, `reverseproxy`, exposed via port 80. 
@@ -607,7 +608,7 @@ A CloudFormation template is used to create a **stack** representing our archite
 
 ``` shell
 cd ~/myproject
-curl -L -o my-public-vpc.json https://raw.githubusercontent.com/UsefulEngines/staticfiles/master/awslab.io/Containers/Fargate/scripts/myproject/my-public-vpc.json
+curl -L -o my-public-vpc.json https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/my-public-vpc.json
 ```
 
 Using `more`, `cat`, or `nano` to review this template file. In all probability it will require no changes. Note the specification of all VPC, Subnet, Application Load Balancer, ENI and other architectural requirements. 
@@ -643,113 +644,7 @@ curl -L -o my-fargate-service.yml https://raw.githubusercontent.com/awslabs/aws-
 ```
 
 
-
-
-DELETE BELOW
-## Create a Cluster with a Fargate Task using the AWS CLI
-
-Let's create a Fargate cluster using the [AWS CLI](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_AWSCLI_Fargate.html) tooling that we previously installed.
-
-Create your own uniquely named cluster with the following command.
-
-``` shell
-aws ecs create-cluster --cluster-name myfargatecluster
-```
-
-Register a Task definition as follows.  Task definitions specify how to create and configure your container hosting environment.
-
-
-DELETE ABOVE
-
-
-## Create a Cluster with a Fargate Task using the Amazon ECS CLI
-
-Let's create a Fargate cluster using the [Amazon ECS CLI](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-cli-tutorial-fargate.html) tooling.
-
-### Install the ECS CLI
-
-``` shell
-sudo curl -o /usr/local/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
-```
-``` shell
-sudo chmod +x /usr/local/bin/ecs-cli
-```
-``` shell
-ecs-cli --version
-```
-
-### Create a Task execution IAM role
-
-Create a `task-execution-assume-role.json` with the following contents. Amazon ECS needs permissions so that your Fargate task can store logs in CloudWatch. These permissions are covered by the task execution IAM role.
-
-``` shell
-cd ~/myproject 
-nano task-execution-assume-role.json
-```
-``` json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-```
-
-**Note:** Alternatively, use the following command to download a copy of this script file.
-``` shell
-curl -L -o task-execution-assume-role.json https://raw.githubusercontent.com/UsefulEngines/staticfiles/master/awslab.io/Containers/Fargate/scripts/myproject/task-execution-assume-role.json
-```
-
-Create the task execution role within your default region.
-``` shell
-aws iam create-role --role-name ecsTaskExecutionRole --assume-role-policy-document file://task-execution-assume-role.json
-```
-
-Attach the task execution role policy within your default region.
-```
-aws iam attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-```
-
-### Configure the Amazon ECS CLI
-
-Create a cluster configuration, which defines the AWS region to use, resource creation prefixes, and the cluster name to use with the Amazon ECS CLI.
-```
-ecs-cli configure --cluster myfargatecluster --region your-region --default-launch-type FARGATE --config-name myfargatecluster
-```
-
-Create a CLI profile using your access key and secret key in order for the ECS CLI to accomplish API calls on your behalf.
-```
-ecs-cli configure profile --access-key AWS_ACCESS_KEY_ID --secret-key AWS_SECRET_ACCESS_KEY --profile-name tutorial
-```
-
-### Create a Cluster and Security Group
-
-Create an Amazon ECS cluster with the `ecs-cli up` command. Because you specified Fargate as your default launch type in the cluster configuration, this command creates an empty cluster and a VPC configured with two public subnets.
-
-```
-ecs-cli up
-```
-
-**Note:** This command may take a few minutes to complete as your resources are created. Capture the VPC and Subnet ID's that are created as they are used later.
-
-Create a security group using the VPC ID from the previous output.
-
-```
-aws ec2 create-security-group --group-name "my-sg" --description "MySecurityGroup" --vpc-id "VPC_ID"
-```
-
-Add a security group rule to allow inbound access on port 80.
-```
-aws ec2 authorize-security-group-ingress --group-id "security_group_id" --protocol tcp --port 80 --cidr 0.0.0.0/0
-```
-
+[YET TO BE COMPLETED...]
 
 
 This completes our illustration about how to host an ASP.NET Core MVC application and Nginx reverse proxy using AWS Fargate.
