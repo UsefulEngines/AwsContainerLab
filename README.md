@@ -26,6 +26,7 @@ Herein, we illustrate building, deploying, and running a .NET Core containerized
 This lab is derived from work done by others including:
 * https://github.com/aws-samples/amazon-ecs-fargate-aspnetcore/
 * https://aws.amazon.com/blogs/compute/hosting-asp-net-core-applications-in-amazon-ecs-using-aws-fargate/
+* https://github.com/nathanpeck/awesome-ecs
 
 
 ### Reference Architecture
@@ -634,9 +635,14 @@ Confirm completion of the stack creation.
 ``` shell
 aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE
 ```
+View your stack using the AWS CloudFormation Console.
 
-TODO :
-1. Illustrate via the cloudformation console that the VPC is created.  Review the output and resource lists.
+![cloudformationconsole](./images/awscloudformationconsole.jpg)
+
+Note the important configuration information produced via the `outputs` section of the `my-public-vpc.json` CloudFormation template.
+
+![my-public-vpc-stack-outputs](./images/my-public-vpc-stack-outputs.jpg)
+
 
 
 ### Create ECS Task Definitions
