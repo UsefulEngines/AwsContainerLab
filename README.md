@@ -1,5 +1,5 @@
 
-# Building Services using .NET Core, Cross-Platform Tools, and AWS Fargate
+# Container Services using .NET Core, Cross-Platform Tools, and AWS Fargate
 Amazon Web Service (AWS) Fargate is a compute cluster engine that automatically manages containerized application deployment configurations.  There is no need to provision, manage, or scale any underlying Amazon EC2 compute infrastructure.
 
 Fargate works with Amazon Elastic Container Service (ECS) and can run microservices developed in many programming languages or application frameworks including Java, .NET Core, Python, Node.js, Go, or Ruby on Rails. 
@@ -635,13 +635,15 @@ Confirm completion of the stack creation.
 aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE
 ```
 
-
-## Create an ECS Cluster with a Fargate Task using CloudFormation
 TODO :
-
 1. Illustrate via the cloudformation console that the VPC is created.  Review the output and resource lists.
-2. Create/Edit the TaskDefinition for our service
-3. Create the Service and experiment with scaling, etc.
+
+
+### Create ECS Task Definitions
+
+TODO :
+1. Create/Edit the TaskDefinition for our service
+2. Create the Service and experiment with scaling, etc.
 
 [YET TO BE COMPLETED...]
 
@@ -650,7 +652,7 @@ This completes our illustration on how to host an ASP.NET Core MVC web applicati
 
 
 <a id='appendix-a'></a>
-# Appendix A : Connect to your AWS Linux AMI Development Environment
+## Appendix A : Connect to your AWS Linux AMI Development Environment
 
 ### <i class="fab fa-windows" aria-hidden="true"></i> Windows Users: Using SSH to Connect
 
