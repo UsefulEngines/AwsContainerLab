@@ -592,6 +592,10 @@ Push the `reverseproxy` image to the remote ECR `reverseproxy` repository.
 docker push yourawsaccountnumber.dkr.ecr.your-region.amazonaws.com/reverseproxy 
 ```
 
+Note that we used both `aws` and `docker` tools for management of our ECR container repositories.  
+For .NET developers, another attractive option is to utilize the `dotnet Amazon.ECS.Tools` instead.  
+See more information [here](https://github.com/aws/aws-extensions-for-dotnet-cli).
+
 
 ## Create a VPC Infrastructure using CloudFormation
 
@@ -644,15 +648,75 @@ Note the important configuration information produced via the `outputs` section 
 ![my-public-vpc-stack-outputs](./images/my-public-vpc-stack-outputs.jpg)
 
 
+## Understanding ECS Tasks and Services
 
-### Create ECS Task Definitions
+A **Task Definition** defines a collection of one or more container image configurations and corresponding 
+resource dependencies including instance counts, dependencies, port assignments, memory budgets, CPU capacities, 
+log connections, and environment variables. 
+ 
+A **Task** instance is launched via the ECS **Scheduler** according to scheduling policies which generally 
+dictate when, where, and for how-long the task instance collection will run.  A Task instance may run once to completion, 
+be scheduled to run when specific events occur, or be run continuously within the context of a Service.
+
+A **Service** enables ECS to provide a desired-state capability ensuring that some number of Tasks are available at all times.  
+Tasks are created within the context of a Service, but Tasks may also be created independently of a Service.  Services can be 
+configured to leverage resources such as Load Balancers and thus provide dynamic address mapping for perhaps transient back-end 
+Task instances.
+
+A **Cluster** provides the contextual hosting abstraction necessary to schedule, launch, maintain, terminate, and manage resources for our Services and Tasks.
+
+
+### Register a Task Definitions
+
+A task definition is required to run Docker containers in Amazon ECS. Some of the parameters you can specify in a task definition include:
+
+* The Docker image to use with each container in your task.
+
+* How much CPU and memory to use with each task or each container within a task.
+
+* The launch type to use, which determines the infrastructure on which your tasks are hosted.
+
+* The Docker networking mode to use for the containers in your task.
+
+* The logging configuration to use for your tasks.
+
+* Whether the task should continue to run if the container finishes or fails.
+
+* The command the container should run when it is started.
+
+* Any data volumes that should be used with the containers in the task.
+
+* The IAM role that your tasks should use.
+
+
+
+
+
+
+AWS CLI Command Reference - Create-Service
+https://docs.aws.amazon.com/cli/latest/reference/ecs/create-service.html 
+
+
 
 TODO :
 1. Create/Edit the TaskDefinition for our service
 2. Create the Service and experiment with scaling, etc.
 
+
+### List Task Definitions
+
+
+### Create a Service
+
+
+### List Services
+
 [YET TO BE COMPLETED...]
 
+
+Note that herein we utilized the AWS CLI, `aws ecs`, for ECS Task and Service management.  Another interesting option is the Amazon ECS CLI, `ecs cli`.  
+See more info [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-cli-tutorial-fargate.html).  
+And, for .NET developers, another command-line option is to utilize the `dotnet Amazon.ECS.Tools`.  See more information [here](https://github.com/aws/aws-extensions-for-dotnet-cli). 
 
 This completes our illustration on how to host an ASP.NET Core MVC web application service using AWS Fargate.
 
