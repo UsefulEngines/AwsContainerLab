@@ -4,7 +4,7 @@ Amazon Web Service (AWS) Fargate is a compute cluster engine that automatically 
 
 Fargate works with Amazon Elastic Container Service (ECS) and can run microservices developed in many programming languages or application frameworks including Java, .NET Core, Python, Node.js, Go, or Ruby on Rails. 
 
-There are numerous methods to develop, build, and deploy .NET Core solutions using container hosting services such as ECS, Fargate, and EKS. 
+There are numerous methods available to develop, build, and deploy .NET Core solutions and to leverage container hosting services such as ECS, Fargate, and EKS. 
 
 The most accessible approach is to utilize the [AWS Toolkit for Visual Studio](https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/deployment-ecs-aspnetcore-fargate.html) which provides nicely integrated project templates and publishing wizards. 
 An extension for [Visual Studio Code](https://github.com/aws/aws-toolkit-vscode) also offers a nice cross-platform tooling experience.
@@ -35,7 +35,7 @@ A reference architecture for an AWS Fargate deployment should specify artifacts 
 
 Herein, our example ASP.NET Core application will serve traffic from the Internet.  Hence, we will deploy containers in a public VPC Subnet using a Public Load Balancer option.
 
-Refer to this [AWS Labs github project](https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS) for solution architecture options illustrations.
+Refer to this [AWS Labs github project](https://github.com/awslabs/aws-cloudformation-templates/tree/master/aws/services/ECS) for solution architecture options and illustrations.
 
 Figure 1 illustrates a corresponding reference architecture. 
 
@@ -210,7 +210,7 @@ For capabilities such as serving static content, caching requests, compressing r
 
 ### Create an NGINX reverse proxy container
 
-Nginx can act as both the HTTP and reverse-proxy server. Nginx is highly adopted because of its asynchronous, event-driven architecture that allows it to serve thousands of concurrent requests with a low-memory footprint.
+Nginx can act as both an HTTP and reverse-proxy server. Nginx is highly adopted because of its asynchronous, event-driven, architecture that allows it to serve many concurrent requests with a low-memory footprint.
 
 In this solution, deploy a Nginx `reverseproxy` container in front of the application `mywebapp` container, to be defined within an AWS Fargate Task.
 
