@@ -21,7 +21,8 @@ Herein, we illustrate building, deploying, and running a .NET Core containerized
 * Requirements : A laptop or workstation (Windows, Mac, Linux) with a Terminal application. Refer to  <a href="#appendix-a">**Appendix A**</a> herein.
 * An [AWS Account](https://aws.amazon.com/account/)
 
-**Credits**
+**Credits** 
+
 This lab is derived from work done by others including:
 * https://github.com/aws-samples/amazon-ecs-fargate-aspnetcore/
 * https://aws.amazon.com/blogs/compute/hosting-asp-net-core-applications-in-amazon-ecs-using-aws-fargate/
@@ -550,7 +551,7 @@ eval < myreverseproxy-login.sh
 ```
 
 Note that ECR login keys are valid for only 12 hours.  Afterwards, another logon request must be issued.
-```
+``` shell
 eval "$(aws ecr get-login --no-include-email)"
 ```
 
@@ -615,33 +616,26 @@ Using `more`, `cat`, or `nano` to review this template file. In all probability 
 Our Fargate Task elements remain to be defined.
 
 First, validate the template file.
-```
+``` shell
 aws cloudformation validate-template --template-body file://my-public-vpc.json
 ```
 
 Next, create your CloudFormation stack.  Notice the returned `StackId`. Also note the introduction of the  `--capabilities CAPABILITY_IAM` parameter.  This represents your acknowledgement that the script will modify IAM security groups within your AWS account.
-`
+``` shell
 aws cloudformation create-stack --stack-name my-public-vpc-stack --capabilities CAPABILITY_IAM --template-body file://my-public-vpc.json 
-`
+```
 
 Check the status of our stack creation.  It may take a few minutes to spin-up this infrastructure.
-```
+``` shell
 aws cloudformation describe-stack-events --stack-name my-public-vpc-stack
 ```
 
 Confirm completion of the stack creation.
-```
+``` shell
 aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE
 ```
 
 
-
-Create an ECS Fargate Task
-
-```
-curl -L -o my-fargate-service.yml https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/services/ECS/FargateLaunchType/services/public-service.yml
-
-```
 
 
 [YET TO BE COMPLETED...]
