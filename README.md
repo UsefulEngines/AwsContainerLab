@@ -69,11 +69,10 @@ Your development environment needs to have the following minimal tools configura
 
 **Your Lab Workstation - A Remote AWS Linux AMI Instance**
 1. For this lab, we utilize an EC2 hosted **.NET Core 2.1 with Amazon Linux 2 - Version 1.0** instance.  This Amazon Machine Image (AMI) is preconfigured with both **AWS CLI** and the **dotnet** runtime.  It doesn't include **AWS .NET Core Global Tools** nor **docker**, but we will install those.
-2. Don't know how to create an EC2 instance?  Please refer to step-wise documentation at (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html). 
+2. Don't know how to create an EC2 instance?  Please refer to step-wise documentation at (https://aws.amazon.com/getting-started/tutorials/launch-a-virtual-machine/). 
 3. When creating your AMI instance, be sure to select the **.NET Core 2.1 with Amazon Linux 2 - Version 1.0** AMI-type.  We recommend utilizing a **t2.large** or better host-machine type. 
-4. Please refer to a companion lab at (http://www.awslab.io/dotnet/launchingec2windows/) for general instructions on deploying an EC2 instance. But, instead of creating a Windows EC2 instance, choose the **.NET Core 2.1 with Amazon Linux 2 - Version 1.0** image-type. 
-5. When creating your EC2 instance, be sure to either download (or select an existing) **PEM** key file for subsequent use for secure shell (SSH) logon from your local terminal application.
-6. Refer to  <a href="#appendix-a">**Appendix A**</a> herein for instructions on accessing your AMI instance via SSH. 
+4. When creating your EC2 instance, be sure to either download (or select an existing) **PEM** key file for subsequent use for secure shell (SSH) logon from your local terminal application.
+5. Refer to  <a href="#appendix-a">**Appendix A**</a> herein for instructions on accessing your AMI instance via SSH. 
 
 **Proceed with installation of the following tools only after completion of the above workstation guidance.  All further lab instructions are to be executed from a terminal window remoting into your EC2 instance via SSH.**
 
@@ -658,12 +657,13 @@ A **Task** instance is launched via the ECS **Scheduler** according to schedulin
 dictate when, where, and for how-long the task instance collection will run.  A Task instance may run once to completion, 
 be scheduled to run when specific events occur, or be run continuously within the context of a Service.
 
-A **Service** enables ECS to provide a desired-state capability ensuring that some number of Tasks are available at all times.  
-Tasks are created within the context of a Service, but Tasks may also be created independently of a Service.  Services can be 
+A **Service** enables ECS to provide a desired-state capability ensuring that some number of Tasks are available at all times.  Tasks are created within the context of a Service, but Tasks may also be created independently of a Service.  Services can be 
 configured to leverage resources such as Load Balancers and thus provide dynamic address mapping for perhaps transient back-end 
 Task instances.
 
 A **Cluster** provides the contextual hosting abstraction necessary to schedule, launch, maintain, terminate, and manage resources for our Services and Tasks.
+
+Services and Tasks occupy 3 states, Pending, Running, and Stopped.
 
 
 ### Create a Fargate-Type ECS Cluster
@@ -710,12 +710,17 @@ Of course, it is also possible to create and configure an ECS Cluster via the AW
 
 List your clusters using the following command.  Note the global cluster resource name.  This name is also visible via the [CloudFormation Console](./images/my-public-vpc-stack-outputs.jpg) window, `my-public-vpc-stack`, Outputs tab.
 
-```
+``` shell
 aws ecs list-clusters
 ```
 
+Use the latter part of your cluster ARN string (i.e. your cluster name) to get a description of your cluster. for example:
 
-### Register a Task Definitions
+``` shell
+aws ecs describe-clusters --clusters my-public-vpc-stack-ECSCluster-1KRKMC100O0GD
+```
+
+### Register a Task Definition
 
 A [task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definition_dependson) is required to run Docker containers in Amazon ECS. Some of the parameters you can specify in a task definition include:
 
@@ -737,6 +742,14 @@ A [task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/
 
 * The IAM role that your tasks should use.
 
+Task Definitions consist of three primary sections including ContainerDefinitions, Volumes, and a Family tag.  ECS leverages the Family tag to group multiple revisions of your task definition by category and version number (e.g. mywebsvc:123) 
+
+What does a Task Defintion look like?  How do we create one?  Fortunately, we can leverage the following command to get started.
+
+``` shell
+aws ecs register-task-definition --generate-cli-skeleton
+```
+Don't bother completing this auto-generated Task Definition template now. We have one already completed and will consider it momentarily.
 
 
 
@@ -764,9 +777,7 @@ TODO :
 [YET TO BE COMPLETED...]
 
 
-Note that herein we utilized the AWS CLI, `aws ecs`, for ECS Task and Service management.  Another interesting option is the Amazon ECS CLI, `ecs cli`.  
-See more info [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-cli-tutorial-fargate.html).  
-And, for .NET developers, another command-line option is to utilize the `dotnet Amazon.ECS.Tools`.  See more information [here](https://github.com/aws/aws-extensions-for-dotnet-cli). 
+Note that herein we utilized the AWS CLI, `aws ecs`, for ECS Task and Service management.  Another interesting option is the Amazon ECS CLI, `ecs cli`.  See more info [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-cli-tutorial-fargate.html).  And, for .NET developers, another command-line option is to utilize the `dotnet Amazon.ECS.Tools`.  See more information [here](https://github.com/aws/aws-extensions-for-dotnet-cli). 
 
 This completes our illustration on how to host an ASP.NET Core MVC web application service using AWS Fargate.
 
