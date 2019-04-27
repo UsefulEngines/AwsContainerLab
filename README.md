@@ -207,7 +207,7 @@ For capabilities such as serving static content, caching requests, compressing r
    
 
 
-### Create an NGINX reverse proxy container
+### Create an Nginx reverse proxy container
 
 Nginx can act as both an HTTP and reverse-proxy server. Nginx is highly adopted because of its asynchronous, event-driven, architecture that allows it to serve many concurrent requests with a low-memory footprint.
 
@@ -658,12 +658,11 @@ dictate when, where, and for how-long the task instance collection will run.  A 
 be scheduled to run when specific events occur, or be run continuously within the context of a Service.
 
 A **Service** enables ECS to provide a desired-state capability ensuring that some number of Tasks are available at all times.  Tasks are created within the context of a Service, but Tasks may also be created independently of a Service.  Services can be 
-configured to leverage resources such as Load Balancers and thus provide dynamic address mapping for perhaps transient back-end 
-Task instances.
+configured to leverage resources such as Load Balancers and thus provide dynamic address mapping for perhaps transient back-end Task instances. Services are typicall long-lived and stateless, thus ideal for web-services usage scenarios.
 
 A **Cluster** provides the contextual hosting abstraction necessary to schedule, launch, maintain, terminate, and manage resources for our Services and Tasks.
 
-Services and Tasks occupy 3 states, Pending, Running, and Stopped.
+Services and Tasks occupy 3 lifecycle states; Pending, Running, and Stopped.
 
 
 ### Create a Fargate-Type ECS Cluster
@@ -742,14 +741,87 @@ A [task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/
 
 * The IAM role that your tasks should use.
 
-Task Definitions consist of three primary sections including ContainerDefinitions, Volumes, and a Family tag.  ECS leverages the Family tag to group multiple revisions of your task definition by category and version number (e.g. mywebsvc:123) 
+Task Definitions consist of three primary sections including ContainerDefinitions, Volumes, and a Family tag.  
 
-What does a Task Defintion look like?  How do we create one?  Fortunately, we can leverage the following command to get started.
+ECS leverages the Family tag to group multiple revisions of your task definition by category and version number (e.g. mywebsvc:123). 
 
+Note that, within ECS, task definitions are never deleted, only registered, revised, or deregistered. Deregistering a task definition moves it from ACTIVE to INACTIVE status. 
+
+What does a Task Definition look like?  How do we create one? The following command is your friend.
+``` shell
+aws ecs register-task-definition help
+
+# Press 'q' to exit the very extensive help page.
+```
+
+Fortunately, we can leverage the following command to get started with a skeleton json template.
 ``` shell
 aws ecs register-task-definition --generate-cli-skeleton
 ```
 Don't bother completing this auto-generated Task Definition template now. We have one already completed and will consider it momentarily.
+
+For reference, a minimal task definition may appear as follows. This specific snippet leverages an `nginx` container image from the public repository and not the container that we have previously uploaded to ECR.
+``` json
+# An example minimal task definition - 1 nginx container with corresponding port mappings and resource requirements.
+{
+  "containerDefinitions": [
+    {
+      "name": "nginx",
+      "image": "nginx",
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80
+        }
+      ],
+      "memory": 50,
+      "cpu": 102
+    }
+  ],
+  "family": "mywebsvc"
+}
+```
+If we were going to use this task definition, then we would register it as follows.
+``` shell
+# Example only, don't execute this command now...!
+
+aws ecs register-task-definition --cli-input-json file://my-task-definition.json
+```
+
+You are able to manage your task definitions using the following commands among others.
+``` shell
+# Example only, don't execute these commands now...
+
+# list your family tags
+aws ecs list-task-definition-families    
+
+# list your task definition ARNs
+aws ecs list-task-definitions         
+
+# get details of a specific task definition by specific family tag and version number
+aws ecs describe-task-definition --task-definition mywebsvc:17  
+
+# deregister a task definition by specific tag and version number
+aws ecs derigister-task-definition --task-definition mywebsvc:17
+```
+
+Let's move on to a discussion of Services and consider running Tasks from that perspective.  Again, Services encapsulate Tasks in long-lived scheduling scenarios such as for our web-service application.
+
+### Create a Service
+
+The ECS Scheduler places services (or, tasks) into your cluster using the following general rules.
+
+* Compare your task definition attributes to the state of the cluster. Run where corresponding resources are available
+* Consider how many service instances are running in an availability zone. If possible, distribute instances evenly across zones.
+* Load balance service instances across underlying EC2 container hosts (i.e. servers).
+* When you request to run a short-lived task, perhaps using the `RunTask` command, then pseudo-randomly distribute such tasks.
+* When you request a specific resource pool, perhaps using the `StartTask` command, then assign tasks to your requested host instances.
+* The ECS Container Agent, running on each underlying EC2 host instance, keeps track of localhost resource capacity, utilization, and availability.
+
+
+
+
+
 
 
 
@@ -766,13 +838,6 @@ TODO :
 2. Create the Service and experiment with scaling, etc.
 
 
-### List Task Definitions
-
-
-### Create a Service
-
-
-### List Services
 
 [YET TO BE COMPLETED...]
 
