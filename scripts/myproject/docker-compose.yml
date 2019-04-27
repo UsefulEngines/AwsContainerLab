@@ -1,0 +1,16 @@
+version: '2'
+services:
+  mywebapp:
+    build:
+      context: ./mywebapp
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+  reverseproxy:
+    build:
+      context: ./reverseproxy
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    links :
+      - mywebapp

@@ -1,0 +1,164 @@
+{
+  "executionRoleArn": "arn:aws:iam::<awsaccount>:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "dnsSearchDomains": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/aspnetcorefargatetask",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": null,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "command": null,
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": 1024,
+      "volumesFrom": [],
+      "image": "<awsaccount>.dkr.ecr.us-east-1.amazonaws.com/reverseproxy: latest",
+      "disableNetworking": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "privileged": null,
+      "name": "reverseproxy"
+    },
+    {
+      "dnsSearchDomains": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/aspnetcorefargatetask",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": null,
+      "portMappings": [
+        {
+          "hostPort": 5000,
+          "protocol": "tcp",
+          "containerPort": 5000
+        }
+      ],
+      "command": null,
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": 1024,
+      "volumesFrom": [],
+      "image": "<awsaccount>.dkr.ecr.us-east-1.amazonaws.com/mymvcweb:latest",
+      "disableNetworking": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "privileged": null,
+      "name": "mymvcweb"
+    }
+  ],
+  "placementConstraints": [],
+  "memory": "2048",
+  "taskRoleArn": "arn:aws:iam::<awsaccount>:role/aspnetecstaskroles",
+  "compatibilities": [
+    "EC2",
+    "FARGATE"
+  ],
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:<awsaccount>:task-definition/aspnetcorefargatetask:1",
+  "family": "aspnetcorefargatetask",
+  "requiresAttributes": [
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "networkMode": "awsvpc",
+  "cpu": "1024",
+  "revision": 1,
+  "status": "ACTIVE",
+  "volumes": []
+}
