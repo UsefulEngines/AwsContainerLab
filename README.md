@@ -1,6 +1,6 @@
 
 # Building Services using .NET Core, Cross-Platform Tools, and AWS Fargate
-Amazon Web Service (AWS) Fargate is a compute cluster engine that automatically manages containerized application deployment configuration.  There is no need to provision, manage, or scale any underlying Amazon EC2 compute infrastructure.
+Amazon Web Service (AWS) Fargate is a compute cluster engine that automatically manages containerized application deployment configurations.  There is no need to provision, manage, or scale any underlying Amazon EC2 compute infrastructure.
 
 Fargate works with Amazon Elastic Container Service (ECS) and can run microservices developed in many programming languages or application frameworks including Java, .NET Core, Python, Node.js, Go, or Ruby on Rails. 
 
@@ -78,11 +78,11 @@ Your development environment needs to have the following minimal tools configura
 
 **Update and configure your Lab Workstation**
 
-1. Using your local Terminal application, SSH into the remote Lab Workstation.
+1. Using your local Terminal application, login to the remote Lab Workstation.
 ``` shell
 ssh -i MYKEYPAIR.pem ec2-user@myEc2IpAddress
 
-logon examples:
+login examples:
 ssh -i ~\downloads\mykeypair.pem ec2-user@ec2-34-219-242-224.us-west-2.compute.amazonaws.com
 ssh -i %HOME%\Downloads\mykeypair.pem ec2-user@ec2-34-219-242-224.us-west-2.compute.amazonaws.com
 ```
@@ -112,12 +112,12 @@ sudo amazon-linux-extras install nginx1.12
 sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 ```
-8. Logout and logon again in order to effect the `ec2-user` user group privilege change made previously.
+8. Logout and login again in order to effect the `ec2-user` user group privilege change made previously.
 ``` shell
 logout
 ```
 ``` shell
-logon examples:
+login examples:
 ssh -i ~\downloads\mykeypair.pem ec2-user@ec2-34-219-242-224.us-west-2.compute.amazonaws.com
 ssh -i %HOME%\Downloads\mykeypair.pem ec2-user@ec2-34-219-242-224.us-west-2.compute.amazonaws.com
 ```
@@ -390,14 +390,14 @@ Successfully tagged myproject_reverseproxy:latest
 ```
 
 Now, we need to both run our containerized web application and concurrently browse to the application.
-An easy localhost testing approach is to simply open a second logon session, run our application, and invoke it from our 
-first logon session.
+An easy localhost testing approach is to simply open a second login session, run our application, and invoke it from our 
+first login session.
 
 From your desktop, open a new Terminal window and again SSH into the remote Lab Workstation (keeping your first SSH session open).
 ``` shell
 ssh -i MYKEYPAIR.pem ec2-user@myEc2IpAddress
 
-logon examples:
+login examples:
 ssh -i ~\downloads\mykeypair.pem ec2-user@ec2-34-219-242-224.us-west-2.compute.amazonaws.com
 ssh -i %HOME%\Downloads\mykeypair.pem ec2-user@ec2-34-219-242-224.us-west-2.compute.amazonaws.com
 ```
@@ -592,7 +592,7 @@ docker push yourawsaccountnumber.dkr.ecr.your-region.amazonaws.com/reverseproxy
 ```
 
 
-## Create an ECS Cluster with a Fargate Task using CloudFormation
+## Create a VPC Infrastructure using CloudFormation
 
 
 Let's review our target solution architecture.
@@ -605,14 +605,14 @@ Actually, Fargate works with ECS to relieve you only of EC2 instance maintenance
 
 When creating AWS Infrastructure components, it's convenient to utilize a CloudFormation template.  There are many advantages to this approach including an ability to version control our clustering environment.  
 
-A CloudFormation template is used to create a **stack** representing our architecture.  Use the following command to download a copy our CloudFormation template.
+A CloudFormation template is used to create a **stack** representing all, or portions of, our cloud infrastructure.  Use the following command to download a copy our CloudFormation template. 
 
 ``` shell
 cd ~/myproject
 curl -L -o my-public-vpc.json https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/my-public-vpc.json
 ```
 
-Using `more`, `cat`, or `nano` to review this template file. In all probability it will require no changes. Note the specification of all VPC, Subnet, Application Load Balancer, ENI and other architectural requirements. 
+Using `more`, `cat`, or `nano` to review this template file. It should require no changes to work within your account. Note the specification of all VPC, Subnet, Application Load Balancer, ENI and other architectural requirements. 
 Our Fargate Task elements remain to be defined.
 
 First, validate the template file.
@@ -636,12 +636,17 @@ aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE
 ```
 
 
+## Create an ECS Cluster with a Fargate Task using CloudFormation
+TODO :
 
+1. Illustrate via the cloudformation console that the VPC is created.  Review the output and resource lists.
+2. Create/Edit the TaskDefinition for our service
+3. Create the Service and experiment with scaling, etc.
 
 [YET TO BE COMPLETED...]
 
 
-This completes our illustration about how to host an ASP.NET Core MVC application and Nginx reverse proxy using AWS Fargate.
+This completes our illustration on how to host an ASP.NET Core MVC web application service using AWS Fargate.
 
 
 <a id='appendix-a'></a>
@@ -649,14 +654,14 @@ This completes our illustration about how to host an ASP.NET Core MVC applicatio
 
 ### <i class="fab fa-windows" aria-hidden="true"></i> Windows Users: Using SSH to Connect
 
-<i class="fas fa-comment" aria-hidden="true"></i> These instructions are for Windows users only.  There are several options for client terminal (i.e. shell) access to an AWS Linux AMI instance. This guide recommends using the Open Source application named **Cmder**.
+<i class="fas fa-comment" aria-hidden="true"></i>Steps 1-4 below are for Windows users only.  If you are using a Mac or Linux lab computer, <a href="#ssh-MACLinux">skip to the next section</a>.
 
-If you are using a Mac or Linux lab computer, <a href="#ssh-MACLinux">skip to the next section</a>.
+There are several options for client terminal (i.e. shell) access to an AWS Linux AMI instance. This guide recommends using the Open Source application, **Cmder**.  Other options include PuTTY, or Git Bash. 
 
-1. From your Windows workstation, install the useful **Cmder** command shell (https://cmder.net) enabling a more cross-platform terminal experience.  Be sure to select the "Download Full" option which includes 'git-for-windows' support and 'Unix' style commands. 
-2. We recommend that you extract the Cmder.zip file to c:\Cmder and add that folder to your system PATH environment variable. 
-3. Launch a Cmder session by clicking the C:\Cmder\Cmder.exe file from Windows Explorer.  This is your terminal window.
-4. You will use SSH from a **Cmder** window to logon to your Amazon EC2 instance.
+1. From your Windows workstation, install the **Cmder** application (https://cmder.net). Be sure to select the "Download Full" option which includes git-for-windows support and Unix style commands. 
+2. We recommend that you extract the Cmder.zip file to c:\Cmder and add that folder to your system PATH environment variable or create a short-cut to `C:\Cmder\Cmder.exe` on your desktop.
+3. Launch a Cmder session by clicking the `C:\Cmder\Cmder.exe` file from Windows Explorer. This is your terminal window.
+4. You will use SSH from a **Cmder** window to logon to your Amazon EC2 instance as follows. Proceed to step number 2 below.
 
 <a id='ssh-MACLinux'></a>
 ### Windows,<i class="fab fa-windows" aria-hidden="true"></i> Mac, <i class="fab fa-apple" aria-hidden="true"></i> and Linux <i class="fab fa-linux" aria-hidden="true"></i> Users
@@ -669,7 +674,7 @@ If you are using a Mac or Linux lab computer, <a href="#ssh-MACLinux">skip to th
 6. Note the displayed EC2 instance IP Address, URL, and SSH command line example. Copy this SSH command line to a text editor and correctly specify your **PEM** key-pair file name.
 7. Execute the following commands from your terminal window.  Your key-pair file-name and Ec2IpAddress will differ from the example.
 
-```plain
+```shell
 chmod 400 MYKEYPAIR.pem
 ssh -i MYKEYPAIR.pem ec2-user@myEc2IpAddress
 
