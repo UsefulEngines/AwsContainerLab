@@ -666,9 +666,58 @@ Task instances.
 A **Cluster** provides the contextual hosting abstraction necessary to schedule, launch, maintain, terminate, and manage resources for our Services and Tasks.
 
 
+### Create a Fargate-Type ECS Cluster
+
+Actually, you have already accomplished this feat! Note the `ECSCluster` element of the CloudFormation template that you imported above ([yaml version displayed](https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/my-public-vpc.yml)).
+
+``` yaml
+# A sub-section of our CloudFormation deployment configuration template.
+
+# ECS Resources
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+
+  # A security group for the containers we will run in Fargate.
+  # Two rules, allowing network traffic from a public facing load
+  # balancer and from other members of the security group.
+  #
+  # Remove any of the following ingress rules that are not needed.
+  # If you want to make direct requests to a container using its
+  # public IP address you'll need to add a security group rule
+  # to allow traffic from all IP addresses.
+  FargateContainerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access to the Fargate containers
+      VpcId: !Ref 'VPC'
+  EcsSecurityGroupIngressFromPublicALB:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Ingress from the public ALB
+      GroupId: !Ref 'FargateContainerSecurityGroup'
+      IpProtocol: -1
+      SourceSecurityGroupId: !Ref 'PublicLoadBalancerSG'
+  EcsSecurityGroupIngressFromSelf:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Ingress from other containers in the same security group
+      GroupId: !Ref 'FargateContainerSecurityGroup'
+      IpProtocol: -1
+      SourceSecurityGroupId: !Ref 'FargateContainerSecurityGroup'
+```
+
+Of course, it is also possible to create and configure an ECS Cluster via the AWS command-line, for example, using `aws ecs create-cluster --cluster-name ...` and other supporting  commands.
+
+List your clusters using the following command.  Note the global cluster resource name.  This name is also visible via the [CloudFormation Console](./images/my-public-vpc-stack-outputs.jpg) window, `my-public-vpc-stack`, Outputs tab.
+
+```
+aws ecs list-clusters
+```
+
+
 ### Register a Task Definitions
 
-A task definition is required to run Docker containers in Amazon ECS. Some of the parameters you can specify in a task definition include:
+A [task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definition_dependson) is required to run Docker containers in Amazon ECS. Some of the parameters you can specify in a task definition include:
 
 * The Docker image to use with each container in your task.
 
@@ -687,6 +736,7 @@ A task definition is required to run Docker containers in Amazon ECS. Some of th
 * Any data volumes that should be used with the containers in the task.
 
 * The IAM role that your tasks should use.
+
 
 
 
