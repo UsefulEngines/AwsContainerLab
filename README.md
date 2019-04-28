@@ -778,7 +778,7 @@ For reference, a minimal task definition may appear as follows. This specific sn
       "cpu": 102
     }
   ],
-  "family": "mywebsvc"
+  "family": "mynginxtest"
 }
 ```
 If we were going to use this task definition, then we would register it as follows.
@@ -818,6 +818,16 @@ The ECS Scheduler places services (or, tasks) into your cluster using the follow
 * When you request a specific resource pool, perhaps using the `StartTask` command, then assign tasks to your requested host instances.
 * The ECS Container Agent, running on each underlying EC2 host instance, keeps track of localhost resource capacity, utilization, and availability.
 
+What does a Service template look like? 
+``` shell
+aws ecs create-service --generate-cli-skeleton
+```
+What services may be running on our cluster?
+``` shell
+aws ecs list-clusters
+
+aws ecs list-services --cluster <your cluster name here>
+```
 
 
 
@@ -836,6 +846,7 @@ https://docs.aws.amazon.com/cli/latest/reference/ecs/create-service.html
 TODO :
 1. Create/Edit the TaskDefinition for our service
 2. Create the Service and experiment with scaling, etc.
+3. Clean-up
 
 
 
@@ -854,7 +865,7 @@ This completes our illustration on how to host an ASP.NET Core MVC web applicati
 
 <i class="fas fa-comment" aria-hidden="true"></i>Steps 1-4 below are for Windows users only.  If you are using a Mac or Linux lab computer, <a href="#ssh-MACLinux">skip to the next section</a>.
 
-There are several options for client terminal (i.e. shell) access to an AWS Linux AMI instance. This guide recommends using the Open Source application, **Cmder**.  Other options include PuTTY, or Git Bash. 
+For Windows users, there are several options for client terminal (i.e. shell) access to an AWS Linux AMI instance. This guide recommends using the Open Source application, **Cmder**.  Other options include [PuTTY](http://putty.org), or [Git Bash](https://gitforwindows.org). 
 
 1. From your Windows workstation, install the **Cmder** application (https://cmder.net). Be sure to select the "Download Full" option which includes git-for-windows support and Unix style commands. 
 2. We recommend that you extract the Cmder.zip file to c:\Cmder and add that folder to your system PATH environment variable or create a short-cut to `C:\Cmder\Cmder.exe` on your desktop.
