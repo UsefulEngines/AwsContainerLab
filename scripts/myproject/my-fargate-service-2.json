@@ -4,7 +4,7 @@
     "Parameters": {
         "StackName": {
             "Type": "String",
-            "Default": "production",
+            "Default": "my-public-vpc-stack",
             "Description": "The name of the parent Fargate networking stack that you created. Necessary to locate and reference resources created by that stack."
         },
         "ServiceName": {
