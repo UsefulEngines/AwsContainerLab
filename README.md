@@ -913,7 +913,7 @@ If all things are configured correctly, you should see a default reponse page fr
 
 For example, when I browsed to `http://my-pu-publi-15n0og2h1pmbr-209038921.us-west-2.elb.amazonaws.com/` is see the following.
 
-![BrowseToServiceIp](.images/browse-to-stack-url-success.jpg)
+![BrowseToServiceIp](./images/browse-to-stack-url-success.jpg)
 
 
 ### Create a New Service using our ASP.NET MVC Container Image
