@@ -879,10 +879,11 @@ aws ecs delete-service --cluster YOUR-CLUSTER-NAME --service fargate-service
 
 ```
 
-### Create a New Service using CloudFormation and a Service Template File
+### Create a New Service using a CloudFormation Service Template File
 
-Now, let's create a service that is configured to receive traffic from our Load Balancer so that we can browse to the application via your VPC's `ExternalURL`.  
-Web request routing will transition thru the Load Balancer and to an Nginx instance within an ECS hosted container instance.  
+Using a CloudFormation template to specify your service configuration make it easier to manage architectural complexity.  
+
+Now, let's create a service that is configured to receive traffic from our Load Balancer so that we can browse to the application via your VPC's `ExternalURL`.   Web request routing will transition thru the Load Balancer and to an Nginx instance running on a Fargate managed container instance.  
 
 Download the following script to your local lab machine (not to your AWS Linux AMI Workstation)
 
@@ -891,7 +892,7 @@ curl -L -o my-fargate-service-1.json https://raw.githubusercontent.com/UsefulEng
 ```
 Open this file within a local text editor to review the service and task definitions therein. Note the use of the `StackName` parameter at the top of the file. This creates a stack-set correlation with your existing stack.
 
-Browse to, and login to, your the AWS Console using your assigned lab account (http://console.aws.amazon.com).  Recall that you have previously navigated to the CloudFormation service console.  
+Browse to your the AWS Console using your assigned lab account (http://console.aws.amazon.com).  Recall that you have previously navigated to the CloudFormation service console.  
 
 You need to create a new stack but ensure that your existing ECS `my-public-vpc-stack` is the parent of this new stack.
 
@@ -916,7 +917,7 @@ For example, when I browsed to `http://my-pu-publi-15n0og2h1pmbr-209038921.us-we
 ![BrowseToServiceIp](./images/browse-to-stack-url-success.jpg)
 
 
-### Create a New Service using our ASP.NET MVC Container Image
+### Create a New Service using your ASP.NET MVC Container Image
 
 * TODO
 
@@ -926,12 +927,11 @@ For example, when I browsed to `http://my-pu-publi-15n0og2h1pmbr-209038921.us-we
 * TODO
 
 
-TODO :
-3. Clean-up
+### Clean-up
+
+* TODO
 
 
-
-[YET TO BE COMPLETED...]
 
 
 Note that herein we utilized the AWS CLI, `aws ecs`, for ECS Task and Service management.  Another interesting option is the Amazon ECS CLI, `ecs cli`.  See more info [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-cli-tutorial-fargate.html).  And, for .NET developers, another command-line option is to utilize the `dotnet Amazon.ECS.Tools`.  See more information [here](https://github.com/aws/aws-extensions-for-dotnet-cli). 
