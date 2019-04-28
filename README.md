@@ -787,6 +787,7 @@ If we were going to use this task definition, then we would register it as follo
 
 aws ecs register-task-definition --cli-input-json file://my-task-definition.json
 ```
+
 Instead, let's first import a sample from the [AWS ECS Developer Guide](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_AWSCLI_Fargate.html).
 
 Use the following commands to download and view our simple Task Definition.
@@ -854,15 +855,13 @@ Example:
 aws ecs create-service --cluster my-public-vpc-stack-ECSCluster-1KRKMC100O0GD --service-name fargate-service --task-definition sample-fargate:1 --desired-count 1 --launch-type "FARGATE" --network-configuration "awsvpcConfiguration={subnets=[subnet-0ad15ca76351f48f3],securityGroups=[sg-02deb123cad5a4037]}"
 ```
 
-Notice from the output response that this service is has an attribute of `assignPublicIp": "DISABLED`. It isn't configured as a target of our Load Balancer.
+Notice from the output response that this service is has an attribute of `assignPublicIp": "DISABLED`. It isn't configured as a target of our Load Balancer and thus unreachable via the browser.
 
 ``` shell
 aws ecs list-clusters
 aws ecs list-services --cluster <your cluster name here>
 aws ecs describe-services --cluster YOUR-CLUSTER-NAME --services fargate-service
 ```
-
-arn:aws:ecs:us-west-2:268829071741:service/fargate-service
 
 Increase the service instance count.
 ``` shell
@@ -880,6 +879,51 @@ aws ecs delete-service --cluster YOUR-CLUSTER-NAME --service fargate-service
 
 ```
 
+### Create a New Service using CloudFormation and a Service Template File
+
+Now, let's create a service that is configured to receive traffic from our Load Balancer so that we can browse to the application via your VPC's `ExternalURL`.  
+Web request routing will transition thru the Load Balancer and to an Nginx instance within an ECS hosted container instance.  
+
+Download the following script to your local lab machine (not to your AWS Linux AMI Workstation)
+
+``` shell
+curl -L -o my-fargate-service-1.json https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/my-fargate-service-1.json
+```
+Open this file within a local text editor to review the service and task definitions therein. Note the use of the `StackName` parameter at the top of the file. This creates a stack-set correlation with your existing stack.
+
+Browse to, and login to, your the AWS Console using your assigned lab account (http://console.aws.amazon.com).  Recall that you have previously navigated to the CloudFormation service console.  
+
+You need to create a new stack but ensure that your existing ECS `my-public-vpc-stack` is the parent of this new stack.
+
+Now, using the AWS CloudFormation console web-page, create a new CloudFormation stack and upload your local copy of file `my-fargate-service-1.json` as the template.
+
+![CreateStack1](./images/upload-my-fargate-service-1.jpg)
+
+Follow the instructions as illustrated. Name your new stack, accept all default parameters, and ensure that the parent stack is your existing `my-public-vpc-stack`.
+
+![CreateStack2](./images/create-service-from-cfn-template2.jpg)
+
+![CreateStack3](./images/create-service-from-cfn-template3.jpg)
+
+When stack creation completes, browse to the public IP address of your `my-public-vpc-stack`.  This `ExternalURL` is available on the "Outputs" tab of the "Stack Details" page.
+
+![FindPublicIpOfStack](./images/my-public-vpc-stack-outputs.jpg)
+
+If all things are configured correctly, you should see a default reponse page from your Nginx web-server, having received a browse request via your Application Load Balancer.
+
+For example, when I browsed to `http://my-pu-publi-15n0og2h1pmbr-209038921.us-west-2.elb.amazonaws.com/` is see the following.
+
+![BrowseToServiceIp](.images/browse-to-stack-url-success.jpg)
+
+
+### Create a New Service using our ASP.NET MVC Container Image
+
+* TODO
+
+
+### Key Learnings
+
+* TODO
 
 
 TODO :
