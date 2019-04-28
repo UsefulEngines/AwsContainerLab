@@ -787,11 +787,26 @@ If we were going to use this task definition, then we would register it as follo
 
 aws ecs register-task-definition --cli-input-json file://my-task-definition.json
 ```
+Instead, let's first import a sample from the [AWS ECS Developer Guide](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_AWSCLI_Fargate.html).
 
+Use the following commands to download and view our simple Task Definition.
+``` shell
+cd ~/myproject
+curl -L -o my-test-task-definition.json https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/my-test-task-definition.json
+cat my-test-task-definition.json
+```
+Register the task definition file.
+``` shell
+aws ecs register-task-definition --cli-input-json file://$HOME/myproject/my-test-task-definition.json
+```
+Notice from the ECS response that the `sample-fargate` task definition is ACTIVE and that the revision number is 1.
+
+Execute the follow command.
+``` shell
+aws ecs list-task-definitions
+```
 You are able to manage your task definitions using the following commands among others.
 ``` shell
-# Example only, don't execute these commands now...
-
 # list your family tags
 aws ecs list-task-definition-families    
 
@@ -799,13 +814,13 @@ aws ecs list-task-definition-families
 aws ecs list-task-definitions         
 
 # get details of a specific task definition by specific family tag and version number
-aws ecs describe-task-definition --task-definition mywebsvc:17  
+aws ecs describe-task-definition --task-definition sample-fargate:1  
 
-# deregister a task definition by specific tag and version number
-aws ecs derigister-task-definition --task-definition mywebsvc:17
+# deregister a task definition by specific tag and version number - please don't execute this one yet..!
+aws ecs derigister-task-definition --task-definition sample-fargate:1
 ```
-
 Let's move on to a discussion of Services and consider running Tasks from that perspective.  Again, Services encapsulate Tasks in long-lived scheduling scenarios such as for our web-service application.
+
 
 ### Create a Service
 
@@ -829,23 +844,45 @@ aws ecs list-clusters
 aws ecs list-services --cluster <your cluster name here>
 ```
 
+Let's create a service using the `sample-fargate` task definition imported above. This will create a service where at least 1 instance of the sample-fargate:1 task definition is kept running in your cluster.
+``` shell
+# Modify the following command line to include your cluster name and your Subnet ID and Security Group - get those from the CloudFormation console, output tab.
 
+aws ecs create-service --cluster YOUR-CLUSTER-NAME --service-name fargate-service --task-definition sample-fargate:1 --desired-count 1 --launch-type "FARGATE" --network-configuration "awsvpcConfiguration={subnets=[subnet-abcd1234],securityGroups=[sg-abcd1234]}"
 
+Example:
+aws ecs create-service --cluster my-public-vpc-stack-ECSCluster-1KRKMC100O0GD --service-name fargate-service --task-definition sample-fargate:1 --desired-count 1 --launch-type "FARGATE" --network-configuration "awsvpcConfiguration={subnets=[subnet-0ad15ca76351f48f3],securityGroups=[sg-02deb123cad5a4037]}"
+```
 
+Notice from the output response that this service is has an attribute of `assignPublicIp": "DISABLED`. It isn't configured as a target of our Load Balancer.
 
+``` shell
+aws ecs list-clusters
+aws ecs list-services --cluster <your cluster name here>
+aws ecs describe-services --cluster YOUR-CLUSTER-NAME --services fargate-service
+```
 
+arn:aws:ecs:us-west-2:268829071741:service/fargate-service
 
+Increase the service instance count.
+``` shell
+aws ecs update-service --cluster YOUR-CLUSTER-NAME --service fargate-service --task-definition sample-fargate --desired-count 2
+```
 
+Decrease the service instance count.
+``` shell
+aws ecs update-service --cluster YOUR-CLUSTER-NAME --service fargate-service --task-definition sample-fargate --desired-count 0
+```
 
+Delete the `fargate-service` service.
+``` shell
+aws ecs delete-service --cluster YOUR-CLUSTER-NAME --service fargate-service 
 
-AWS CLI Command Reference - Create-Service
-https://docs.aws.amazon.com/cli/latest/reference/ecs/create-service.html 
+```
 
 
 
 TODO :
-1. Create/Edit the TaskDefinition for our service
-2. Create the Service and experiment with scaling, etc.
 3. Clean-up
 
 
