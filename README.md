@@ -917,6 +917,11 @@ For example, when I browsed to `http://my-pu-publi-15n0og2h1pmbr-209038921.us-we
 ![BrowseToServiceIp](./images/browse-to-stack-url-success.jpg)
 
 
+### Please see the latest version of this lab...
+
+http://GitHub.com/UsefulEngines/AwsContainerLab
+
+
 ### Create a New Service using your ASP.NET MVC Container Image
 
 * TODO
