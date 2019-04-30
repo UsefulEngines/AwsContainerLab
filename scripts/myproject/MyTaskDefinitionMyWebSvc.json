@@ -1,5 +1,5 @@
 {
-  "executionRoleArn": "arn:aws:iam::ACCOUNT-NUMBER:role/my-public-vpc-stack-ECSTaskExecutionRole-KEZJ9O1OAF7C",
+  "executionRoleArn": "EXAMPLE:  arn:aws:iam::ACCOUNT-NUMBER:role/my-public-vpc-stack-ECSTaskExecutionRole-KEZJ9O1OAF7C",
   "containerDefinitions": [
     {
       "dnsSearchDomains": null,
@@ -7,7 +7,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/mywebsvc",
-          "awslogs-region": "us-west-2",
+          "awslogs-region": "EXAMPLE:  us-west-2",
           "awslogs-stream-prefix": "ecs"
         }
       },
@@ -31,7 +31,7 @@
       "memory": null,
       "memoryReservation": 1024,
       "volumesFrom": [],
-      "image": "ACCOUNT-NUMBER.dkr.ecr.us-west-2.amazonaws.com/reverseproxy:latest",
+      "image": "EXAMPLE:  ACCOUNT-NUMBER.dkr.ecr.us-west-2.amazonaws.com/reverseproxy:latest",
       "disableNetworking": null,
       "healthCheck": null,
       "essential": true,
@@ -50,7 +50,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/mywebsvc",
-          "awslogs-region": "us-west-2",
+          "awslogs-region": "EXAMPLE:  us-west-2",
           "awslogs-stream-prefix": "ecs"
         }
       },
@@ -74,7 +74,7 @@
       "memory": null,
       "memoryReservation": 1024,
       "volumesFrom": [],
-      "image": "ACCOUNT-NUMBER.dkr.ecr.us-west-2.amazonaws.com/mywebapp:latest",
+      "image": "EXAMPLE:  ACCOUNT-NUMBER.dkr.ecr.us-west-2.amazonaws.com/mywebapp:latest",
       "disableNetworking": null,
       "healthCheck": null,
       "essential": true,
@@ -90,12 +90,12 @@
   ],
   "placementConstraints": [],
   "memory": "2048",
-  "taskRoleArn": "arn:aws:iam::ACCOUNT-NUMBER:role/my-public-vpc-stack-ECSTaskExecutionRole-KEZJ9O1OAF7C",
+  "taskRoleArn": "EXAMPLE:  arn:aws:iam::ACCOUNT-NUMBER:role/my-public-vpc-stack-ECSTaskExecutionRole-KEZJ9O1OAF7C",
   "compatibilities": [
     "EC2",
     "FARGATE"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-west-2:ACCOUNT-NUMBER:task-definition/mywebapptaskdef:1",
+  "taskDefinitionArn": "EXAMPLE: arn:aws:ecs:us-west-2:ACCOUNT-NUMBER:task-definition/mywebapp:1",
   "family": "mywebapp",
   "requiresAttributes": [
     {

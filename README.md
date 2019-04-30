@@ -844,7 +844,7 @@ What services may be running on our cluster?
 ``` shell
 aws ecs list-clusters
 
-aws ecs list-services --cluster <your cluster name here>
+aws ecs list-services --cluster YOUR-CLUSTER-NAME
 ```
 
 Let's create a service using the `sample-fargate` task definition imported above. This will create a service where at least 1 instance of the sample-fargate:1 task definition is kept running in your cluster.
@@ -861,7 +861,7 @@ Notice from the output response that this service is has an attribute of `assign
 
 ``` shell
 aws ecs list-clusters
-aws ecs list-services --cluster <your cluster name here>
+aws ecs list-services --cluster YOUR-CLUSTER-NAME
 aws ecs describe-services --cluster YOUR-CLUSTER-NAME --services fargate-service
 ```
 
@@ -918,6 +918,13 @@ For example, when I browsed to `http://my-pu-publi-15n0og2h1pmbr-209038921.us-we
 
 ![BrowseToServiceIp](./images/browse-to-stack-url-success.jpg)
 
+Back at the SSH command line, let's view information about this running service.
+
+```
+aws ecs list-clusters
+aws ecs list-services --cluster YOUR-CLUSTER-NAME
+aws ecs describe-services --cluster YOUR-CLUSTER-NAME --services just-nginx 
+```
 
 ### Please see the latest version of this lab...
 
@@ -926,7 +933,20 @@ http://GitHub.com/UsefulEngines/AwsContainerLab
 
 ### Create a New Service using your ASP.NET MVC Container Image
 
-* TODO
+In the preceding section of this lab, you created a service hosting a single generic nginx container instance.  In this section, let's get back to our original goal of creating a service that hosts 2 container instances, an nginx `reverseproxy` that forwards web requests to our custom `mywebapp` container instance.
+
+First, create a Task Definition.  Use the following URL to download a templated definition file.
+  
+``` shell
+cd ~/myproject
+curl -L -o my-fargate-service-1.json https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/MyTaskDefinition-1.json
+```
+
+Modify this file to specify your account number and other environmental parameters as indicated.
+```
+nano MyTaskDefinition-1.json
+
+```
 
 
 ### Key Learnings
