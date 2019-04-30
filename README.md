@@ -345,7 +345,7 @@ curl -L -o docker-compose.yml https://raw.githubusercontent.com/UsefulEngines/Aw
 
 The `docker-compose.yml` file defines two services. The first service, `mywebapp`, exposes port 5000 and depends upon the service, `reverseproxy`, exposed via port 80. 
 
-The `reverseproxy` service runs the Nginx container on port 80 and also exposes port 80 to outside world. It also links with the service `mymvcweb`. 
+The `reverseproxy` service runs the Nginx container on port 80 and also exposes port 80 to outside world. It also links with the service `mywebapp`. 
 
 The links specification works for Docker Service Composition within our development environment. However, when you convert this into an ECS service definition for Fargate Tasks, these links are not supported via the `awsvpc` networking mode. More detail follows herein.
 
@@ -541,7 +541,7 @@ aws ecr get-login --no-include-email > myreverseproxy-login.sh
 
 **Note:** The output from each command above is saved to corresponding text files as illustrated. Use `cat` to view file contents.  Make a note of the repository URL at the end of the text.
 
-Next, use the generated `Docker login` command files to enable `docker` to access to each repository. 
+Next, use the generated `Docker login` command files to enable `docker` to access to each repository.  
 
 ``` shell
 eval < mywebapp-login.sh
@@ -549,6 +549,8 @@ eval < mywebapp-login.sh
 ``` shell
 eval < myreverseproxy-login.sh
 ```
+
+Actually, only a single login is required. 
 
 Note that ECR login keys are valid for only 12 hours.  Afterwards, another logon request must be issued.
 ``` shell

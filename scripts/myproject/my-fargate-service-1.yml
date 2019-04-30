@@ -3,20 +3,16 @@ Description: Deploy a service on AWS Fargate, hosted in a public subnet, and acc
 Parameters:
   StackName:
     Type: String
-    Default: production
+    Default: my-public-vpc-stack
     Description: The name of the parent Fargate networking stack that you created. Necessary to locate and reference resources created by that stack.
   ServiceName:
     Type: String
-    Default: mywebsvc
+    Default: just-nginx
     Description: A name for the service
-  ImageUrlProxy:
+  ImageUrl:
     Type: String
     Default: nginx
     Description: The url of a docker image that contains the reverseproxy process that will handle the traffic for this service
-  ImageUrlApp:
-    Type: String
-    Default: nginx
-    Description: The url of a docker image that contains the application process that will handle the traffic for this service
   ContainerPort:
     Type: Number
     Default: 80
