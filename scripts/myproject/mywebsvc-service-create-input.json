@@ -1,0 +1,15 @@
+{
+    "cluster": "EXAMPLE: my-public-vpc-stack-ECSCluster-1KRKMC100O0GD",
+    "serviceName": "mywebsvc",
+    "taskDefinition": "mywebsvc",
+    "desiredCount": 1,
+    "launchType": "FARGATE",
+    "networkConfiguration": {
+        "awsvpcConfiguration": {
+            "assignPublicIp": "ENABLED",
+            "securityGroups": [EXAMPLE: "sg-03fd4d968170cdee5", "sg-02deb123cad5a4037"],
+            "subnets": [EXAMPLE: "subnet-0ad15ca76351f48f3", "subnet-0b5fb5346dea30e56"]
+         }
+    }
+}
+

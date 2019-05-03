@@ -878,7 +878,6 @@ aws ecs update-service --cluster YOUR-CLUSTER-NAME --service fargate-service --t
 Delete the `fargate-service` service.
 ``` shell
 aws ecs delete-service --cluster YOUR-CLUSTER-NAME --service fargate-service 
-
 ```
 
 ### Create a New Service using a CloudFormation Service Template File
@@ -926,9 +925,12 @@ aws ecs list-services --cluster YOUR-CLUSTER-NAME
 aws ecs describe-services --cluster YOUR-CLUSTER-NAME --services just-nginx 
 ```
 
-### Please see the latest version of this lab...
+Now, delete this running service.
 
-http://GitHub.com/UsefulEngines/AwsContainerLab
+``` shell
+aws ecs update-service --cluster YOUR-CLUSTER-NAME --service just-nginx --desired-count 0 --task-definition just-nginx 
+aws ecs delete-service --cluster YOUR-CLUSTER-NAME --service just-nginx 
+```
 
 
 ### Create a New Service using your ASP.NET MVC Container Image
@@ -939,26 +941,87 @@ First, create a Task Definition.  Use the following URL to download a templated 
   
 ``` shell
 cd ~/myproject
-curl -L -o my-fargate-service-1.json https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/MyTaskDefinition-1.json
+curl -L -o mywebapp-task-definition.json https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/mywebapp-task-definition.json
+```
+ 
+Modify this file to specify your account number and other configuration parameters as indicated. 
+See lines including the string 'EXAMPLE:' to replace with your specific account information. 
+Find your specific VPC parameters via the CloudFormation Console, `my-public-vpc-stack` stack, and select the `Outputs` and `Resources` tabs.
+
+``` shell
+nano mywebapp-task-definition.json
+cat mywebapp-task-definition.json
 ```
 
-Modify this file to specify your account number and other environmental parameters as indicated.
+Next, register your Task Definition.
+
+``` shell
+aws ecs register-task-definition --cli-input-json file://mywebapp-task-definition.json
 ```
-nano MyTaskDefinition-1.json
 
+Now, create a Service configuration file.  Use the following URL to download a templated configuration file.
+
+``` shell
+cd ~/myproject
+curl -L -o mywebsvc-service-create-input.json https://raw.githubusercontent.com/UsefulEngines/AwsContainerLab/master/scripts/myproject/mywebsvc-service-create-input.json
 ```
 
+Modify this file to specify your account configuration parameters as indicated. 
+See lines including the string 'EXAMPLE:' to replace with your specific account information. 
 
-### Key Learnings
+``` shell
+nano mywebsvc-service-create-input.json
+cat mywebsvc-service-create-input.json
+```
 
-* TODO
+Now, create the service using our existing VPC infrastructure.
+``` shell
+aws ecs create-service --cli-input-json file://mywebsvc-service-create-input.json
+```
+
+View information about your running service.
+``` shell
+aws ecs list-services --cluster YOUR-CLUSTER-NAME
+aws ecs describe-services --cluster YOUR-CLUSTER-NAME --services mywebsvc
+```
+
+Navigate to the `ExternalUrl` to confirm that your `mywebapp` container is responding.
+
+When finished, delete the service as follows.
+``` shell
+aws ecs update-service --cluster YOUR-CLUSTER-NAME --service mywebsvc --desired-count 0 --task-definition mywebsvc 
+aws ecs describe-services --cluster YOUR-CLUSTER-NAME --services mywebsvc
+aws ecs delete-service --cluster YOUR-CLUSTER-NAME --service mywebsvc 
+aws ecs list-services --cluster YOUR-CLUSTER-NAME
+```
+
+And, delete your cluster.
+``` shell
+aws ecs delete-cluster --cluster YOUR-CLUSTER-NAME
+```
 
 
 ### Clean-up
 
-* TODO
-
-
+* List, update, and delete any services using the following command sequence per service.
+``` shell
+aws ecs list-services --cluster YOUR-CLUSTER-NAME
+aws ecs update-service --cluster YOUR-CLUSTER-NAME --service YOUR-SERVICE-NAME --desired-count 0 --task-definition YOUR-TASK-DEFINITION-NAME
+aws ecs delete-service --cluster YOUR-CLUSTER-NAME --service YOUR-SERVICE-NAME
+```
+* List and delete any clusters.
+``` shell
+aws ecs list-clusters
+aws ecs describe-clusters --clusters YOUR-CLUSTER-NAME
+aws ecs delete-cluster --cluster YOUR-CLUSTER-NAME
+```
+* Remove ECR Containers
+``` shell
+aws ecr describe-repositories
+aws ecr delete-repository --repository-name reverseproxy --force
+aws ecr delete-repository --repository-name mywebapp --force
+```
+* Use the AWS Console and the CloudFormation service to delete the `my-public-vpc-stack` stack and subordinate dependent resources.
 
 
 Note that herein we utilized the AWS CLI, `aws ecs`, for ECS Task and Service management.  Another interesting option is the Amazon ECS CLI, `ecs cli`.  See more info [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-cli-tutorial-fargate.html).  And, for .NET developers, another command-line option is to utilize the `dotnet Amazon.ECS.Tools`.  See more information [here](https://github.com/aws/aws-extensions-for-dotnet-cli). 
