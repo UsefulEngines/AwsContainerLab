@@ -985,6 +985,8 @@ aws ecs list-services --cluster YOUR-CLUSTER-NAME
 aws ecs describe-services --cluster YOUR-CLUSTER-NAME --services mywebsvc
 ```
 
+**NOTE:  The following command doesn't work as of June, 2019.  I need to fix the Load Balancer configuration defined within the Service configuration file.**
+
 Navigate to the `ExternalUrl` to confirm that your `mywebapp` container is responding.
 
 When finished, delete the service as follows.
