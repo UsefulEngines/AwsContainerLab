@@ -10,6 +10,12 @@
             "securityGroups": [EXAMPLE: "sg-03fd4d968170cdee5", "sg-02deb123cad5a4037"],
             "subnets": [EXAMPLE: "subnet-0ad15ca76351f48f3", "subnet-0b5fb5346dea30e56"]
          }
-    }
+    },
+    "loadBalancers": [
+        {
+            "targetGroupArn": "EXAMPLE: arn:aws:elasticloadbalancing:YOUR-REGION:YOUR-ACCOUNT-ID:targetgroup/TARGET-GROUP-NAME/abc9999xy12d000z",
+            "containerName": "reverseproxy",
+            "containerPort": 80
+        }
+    ]
 }
-
